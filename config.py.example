@@ -68,3 +68,48 @@ API_DELAY = 1.0
 
 # Dry run mode: if True, prints what would change without modifying Plex
 DRY_RUN = False
+
+# --- Marker Pipeline (optional — leave ENABLE_MARKERS = False to use original behaviour) ---
+# When disabled, the script works exactly as the original: it only edits Plex descriptions.
+# When enabled, it also calls Gemini to extract timestamps from DTDD comments and creates
+# timed markers in Plex so triggering scenes can be skipped during playback.
+#
+# Requirements to enable:
+#   1. pip install google-genai
+#   2. Set GEMINI_API_KEY below
+#   3. Set ENABLE_MARKERS = True
+#
+# If any required value is missing or invalid, markers are silently disabled and a
+# one-time warning is printed — the description-editing feature is unaffected.
+
+# Gemini API key. Get one at: https://aistudio.google.com/app/apikey
+GEMINI_API_KEY = "your-gemini-api-key-here"
+
+# Gemini model to use for timestamp extraction.
+GEMINI_MODEL = "gemini-3.1-pro-preview"
+
+# Master toggle. Set to True to enable Gemini timestamp extraction + Plex marker creation.
+# False (default) = original behaviour only (description editing, no Gemini, no markers).
+ENABLE_MARKERS = False
+
+# Type of Plex marker to create for triggering scenes.
+# One of: intro, commercial, bookmark, resume, credits
+#
+# IMPORTANT: Only "bookmark" can be created via the Plex HTTP API by external
+# tools. The other types (intro, commercial, credits, resume) are reserved for
+# Plex's internal AI analysis engine — the server rejects external POST requests
+# for those types with HTTP 400.
+#
+# If you need "commercial" skip-button behaviour, you will need direct SQLite
+# access to the Plex database (not supported in the HTTP API mode).
+MARKER_TYPE = "bookmark"
+
+# Minimum scene duration in seconds required to create a marker.
+# Scenes shorter than this are ignored. 0 = accept any duration (no minimum).
+# Example: 10 = skip scenes under 10 seconds.
+MIN_MARKER_DURATION_S = 0
+
+# How long to cache the all-episodes (-1,-1) discovery call for TV shows (seconds).
+# Shorter than CACHE_TTL so new episodes on ongoing shows are picked up sooner.
+# Default: 86400 = 1 day (matches typical SCHEDULE interval).
+DISCOVERY_CACHE_TTL = 86400

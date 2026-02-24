@@ -2,24 +2,30 @@ services:
   doesthedogwatchplex:
     build: .
     # image: ghcr.io/justkorix/doesthedogwatchplex:latest  # uncomment after publishing
+    env_file: .env
     environment:
-      - PLEX_URL=http://plex:32400        # or http://HOST_IP:32400
-      - PLEX_TOKEN=your-plex-token
-      - DTDD_API_KEY=your-dtdd-api-key
-      - PLEX_LIBRARIES=Movies              # comma-separated, or leave empty for all
-      - MIN_YES_VOTES=5
-      - MIN_YES_RATIO=0.7
-      - SHOW_SAFE_TOPICS=False
+      - PLEX_URL=${PLEX_URL:-http://plex:32400}
+      - PLEX_TOKEN=${PLEX_TOKEN}
+      - DTDD_API_KEY=${DTDD_API_KEY}
+      - GEMINI_API_KEY=${GEMINI_API_KEY}
+      - GEMINI_MODEL=${GEMINI_MODEL:-gemini-3.1-pro-preview}
+      - PLEX_LIBRARIES=${PLEX_LIBRARIES:-}        # comma-separated, or leave empty for all
+      - ENABLE_MARKERS=${ENABLE_MARKERS:-False}
+      - MARKER_TYPE=${MARKER_TYPE:-commercial}
+      - MIN_MARKER_DURATION_S=${MIN_MARKER_DURATION_S:-0}
+      - MIN_YES_VOTES=${MIN_YES_VOTES:-5}
+      - MIN_YES_RATIO=${MIN_YES_RATIO:-0.7}
+      - SHOW_SAFE_TOPICS=${SHOW_SAFE_TOPICS:-False}
       # Comma-separated list of topics to include (only these will show).
       # Run: docker compose run --rm doesthedogwatchplex --list-topics to see all.
       # Example: a dog dies,someone is sexually assaulted,someone dies by suicide
-      - INCLUDE_TOPICS=
+      - INCLUDE_TOPICS=${INCLUDE_TOPICS:-}
       # Comma-separated list of topics to exclude (ignored if INCLUDE_TOPICS is set).
-      - EXCLUDE_TOPICS=
+      - EXCLUDE_TOPICS=${EXCLUDE_TOPICS:-}
       # Translate warnings to another language (e.g., es, fr, de, pt, ja). Empty = English.
-      - LANGUAGE=
-      - DRY_RUN=False
-      - SCHEDULE=86400                      # run every 24h. Remove for one-shot.
+      - LANGUAGE=${LANGUAGE:-}
+      - DRY_RUN=${DRY_RUN:-False}
+      - SCHEDULE=${SCHEDULE:-}                    # run every N seconds. Remove/empty for one-shot.
     volumes:
       - dtdd-cache:/app/.cache              # persist API cache between runs
     restart: unless-stopped

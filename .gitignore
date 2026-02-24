@@ -1,0 +1,26 @@
+# Real config with secrets — never commit this
+config.py
+.env
+
+# Python
+__pycache__/
+*.pyc
+*.pyo
+*.pyd
+*.egg-info/
+dist/
+build/
+
+# Virtual environment
+.venv/
+venv/
+
+# DTDD/translation cache
+.cache/
+
+# IDE
+.vscode/
+.idea/
+
+# macOS
+.DS_Store
